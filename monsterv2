@@ -1,0 +1,134 @@
+#MY CODE
+import random
+class Monster():
+  def __init__(self, name, hp=20):                #set defaults
+    self.name = None
+    self.current_hp= hp
+    self.max_hp= hp
+    self.xp = 1
+    self.attacks = {'skip': 0, 'headbutt': 2}
+    self.attacks_to_learn = {'gaslight': 1, 'punch': 2, 'fireattack': 3,
+                              'double_hit': 4, 'wait': 0}
+    self.type = None
+
+  def add_attack(self, attack_name):
+    if attack_name in self.attacks_to_learn and attack_name not in self.attacks:
+      if (len(self.attacks) < 4) == True:
+        self.attacks[attack_name] = self.attacks_to_learn[attack_name]
+      return True
+
+    else:
+
+        return False
+
+  def remove_attack(self, attack_name):
+    if attack_name in self.attacks.keys():
+        del self.attacks[attack_name]
+        return True
+    else:
+        return False
+
+  def win_fight(self):
+    self.xp+=5 #Winner gains 5 xp
+    self.current_hp = self.max_hp #restore health
+    if self.exp % 10 == 0:
+      self.max_hp +=5
+
+  def lose_fight(self):
+    self.xp+=1
+    self.current_hp = self.max_hp
+    if self.exp % 10 ==0:
+      self.max_hp -= 5
+#-----------------------------------------------------------------------------------------#
+class Dragon(Monster):
+
+  def win_fight(self):
+    self.exp+=5 #gains 5 xp
+    self.current_hp = self.max_hp #restores health
+    if self.exp % 10 == 0: #accounting for xp changes
+      for i in self.attacks:
+        self.attacks[i] += 1
+
+  def lose_fight(self):
+    self.exp+=1 #gains 1 xp
+    self.current_hp = self.max_hp #restores health
+    if self.exp % 10 == 0: #accounting for xp changes
+      for i in self.attacks:
+        self.attacks[i] -= 1
+#_______________________________________________________________________________________
+class Ghost(Monster):
+
+  def win_fight(self):
+    self.exp+=5
+    self.current_hp = self.max_hp
+    if (self.exp % 10) == 0:
+      self.max_hp = self.max_hp + 5
+      self.current_hp = self.max_hp
+
+  def lose_fight(self):
+      self.exp += 1
+      self.current_hp = self.max_hp
+      if self.exp % 10 ==0:
+        self.max_hp -= 5
+#____________________________________________________________________________
+
+def monster_fight(monster1, monster2):
+    #MONSTER 1 = DRAGON
+    #MONSTER 2 = GHOST
+    dragon= monster1
+    ghost = monster2
+    winner = None
+    round = 1
+    dragon_moves = []
+    ghost_moves = []
+
+    for values in dragon.attacks.values():
+        dragon_moves.append(values)
+    for values in ghost.attacks.values():
+        ghost_moves.append(values)
+
+    dragon_moves = sorted(dragon_moves)
+    ghost_moves = sorted(ghost_moves)
+
+  
+    i = 0
+    j = 0
+    
+          #___________Damage___________
+    while (dragon.current_hp > 0):
+      try:
+        dragon.current_hp -= random.choice(dragon_moves)
+        i += 1
+        round +=1
+            
+
+      except IndexError:
+
+        i = 0
+
+    while(ghost.current_hp > 0):
+      if dragon.current_hp >0:
+        try:
+          ghost.current_hp -= random.choice(ghost_moves)
+          j += 1
+          round +=1
+
+        except IndexError:
+
+          j = 0
+      else: False
+   #-----------------------------------
+    if(ghost.current_hp<=0):
+        winner = dragon
+        dragon.win_fight()
+        ghost.lose_fight()
+        
+
+    elif(dragon.current_hp<=0):
+        winner = ghost
+        ghost.win_fight()
+        dragon.lose_fight()
+
+monster = Monster('Ghost')
+
+dragon = Dragon(monster)
